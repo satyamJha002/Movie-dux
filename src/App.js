@@ -6,23 +6,47 @@ import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import Footer from "./components/Footer";
 import MovieGrid from "./components/MovieGrid";
 import WatchList from "./components/WatchList";
+import { fetchPopularMovies, searchMovies } from "./api/tmdb";
 
 const App = () => {
   const [movies, setMovies] = useState([]);
+  const [movieMap, setMovieMap] = useState({});
   const [watchList, setWatchList] = useState([]);
+
+  const cacheMovies = (list) => {
+    setMovieMap((prevState) => {
+      const nextState = { ...prevState };
+      list.forEach((movie) => {
+        nextState[movie.id] = movie;
+      });
+      return nextState;
+    });
+  };
 
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const response = await fetch("movies.json");
-        const data = await response.json();
+        const data = await fetchPopularMovies();
         setMovies(data);
+        cacheMovies(data);
       } catch (error) {
         console.log(error);
       }
     };
     fetchMovies();
   }, []);
+
+  const handleSearch = async (query) => {
+    try {
+      const data = query.trim()
+        ? await searchMovies(query)
+        : await fetchPopularMovies();
+      setMovies(data);
+      cacheMovies(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const toggleWatchList = (movieId) => {
     setWatchList((prevState) =>
@@ -53,6 +77,7 @@ const App = () => {
               element={
                 <MovieGrid
                   movies={movies}
+                  onSearch={handleSearch}
                   toggleWatchList={toggleWatchList}
                   watchList={watchList}
                 />
@@ -62,7 +87,7 @@ const App = () => {
               path="/watchlist"
               element={
                 <WatchList
-                  movies={movies}
+                  movies={Object.values(movieMap)}
                   toggleWatchList={toggleWatchList}
                   watchList={watchList}
                 />

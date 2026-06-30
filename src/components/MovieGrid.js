@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "../styles.css";
 import MovieCard from "./MovieCard";
 
-function MovieGrid({ movies, watchList, toggleWatchList }) {
+function MovieGrid({ movies, watchList, toggleWatchList, onSearch }) {
   const [searchTerm, setSearchTerm] = useState("");
 
   const [genre, setGenre] = useState("All genre");
@@ -10,6 +10,11 @@ function MovieGrid({ movies, watchList, toggleWatchList }) {
 
   const handleSearchTerm = (e) => {
     setSearchTerm(e.target.value);
+  };
+  const handleSearchKeyDown = (e) => {
+    if (e.key === "Enter") {
+      onSearch(searchTerm);
+    }
   };
   const handleGenreChange = (e) => {
     setGenre(e.target.value);
@@ -23,10 +28,6 @@ function MovieGrid({ movies, watchList, toggleWatchList }) {
       genre === "All Genres" ||
       movie.genre.toLowerCase() === genre.toLowerCase()
     );
-  };
-
-  const matchSearchTerm = (movie, searchTerm) => {
-    return movie.title.toLowerCase().includes(searchTerm.toLowerCase());
   };
 
   const matchRating = (movie, rating) => {
@@ -49,10 +50,7 @@ function MovieGrid({ movies, watchList, toggleWatchList }) {
   };
 
   const filterMovies = movies.filter(
-    (movie) =>
-      matchSearchTerm(movie, searchTerm) &&
-      matchGenre(movie, genre) &&
-      matchRating(movie, rating)
+    (movie) => matchGenre(movie, genre) && matchRating(movie, rating)
   );
 
   return (
@@ -63,6 +61,7 @@ function MovieGrid({ movies, watchList, toggleWatchList }) {
         placeholder="Search movies..."
         value={searchTerm}
         onChange={handleSearchTerm}
+        onKeyDown={handleSearchKeyDown}
       />
 
       <div className="filter-bar">

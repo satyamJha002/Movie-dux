@@ -2,6 +2,14 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## TMDB API setup
+
+Movie data comes from [The Movie Database (TMDB)](https://www.themoviedb.org/) API.
+
+1. Create a free TMDB account and generate an API key (v3 auth) at https://www.themoviedb.org/settings/api
+2. Copy `.env.example` to `.env` if you haven't already, and set `REACT_APP_TMDB_API_KEY` to your key.
+3. Restart `npm start` after changing `.env` (Create React App only reads env vars at startup).
+
 ## Available Scripts
 
 In the project directory, you can run:

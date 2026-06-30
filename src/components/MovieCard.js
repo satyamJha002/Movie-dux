@@ -22,7 +22,7 @@ function MovieCard({ movie, isWatchlisted, toggleWatchList }) {
 
   return (
     <div className="movie-card" key={movie.id}>
-      <img src={`images/${movie.image}`} alt="" onError={handleError} />
+      <img src={movie.image} alt="" onError={handleError} />
       <div className="movie-card-info">
         <h3 className="movie-card-title">{movie.title}</h3>
 
